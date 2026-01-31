@@ -58,14 +58,13 @@ async function onSearch(event) {
 
     createGallery(images);
 
-    if (page * perPage >= totalHits) {
-      hideLoadMoreButton();
+    if (page * perPage < totalHits) {
+      showLoadMoreButton();
+    } else {
       iziToast.info({
         message: "We're sorry, but you've reached the end of search results.",
         position: 'topRight',
       });
-    } else {
-      showLoadMoreButton();
     }
   } catch {
     iziToast.error({
@@ -79,6 +78,8 @@ async function onSearch(event) {
 
 async function onLoadMore() {
   page += 1;
+
+  hideLoadMoreButton(); // ✅ ховаємо кнопку ПЕРЕД запитом
   showLoader();
 
   try {
@@ -88,8 +89,9 @@ async function onLoadMore() {
     createGallery(images);
     smoothScroll();
 
-    if (page * perPage >= totalHits) {
-      hideLoadMoreButton();
+    if (page * perPage < totalHits) {
+      showLoadMoreButton(); // ✅ показуємо лише якщо ще є сторінки
+    } else {
       iziToast.info({
         message: "We're sorry, but you've reached the end of search results.",
         position: 'topRight',
